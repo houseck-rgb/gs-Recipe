@@ -587,6 +587,46 @@ body{background:#faf8f3}
 .rb-g-txt{font-size:16px;color:#3d352b;line-height:1.7;margin-bottom:20px;word-break:keep-all}
 .rb-g-txt b{color:#8a6420}
 .rb-g-ok{width:100%;padding:14px;border:none;border-radius:12px;background:linear-gradient(135deg,#1c1814,#3a3026);color:#f3e3b8;font-size:15px;font-weight:700;cursor:pointer}
+
+/* ════ 레시피 관리 ════ */
+.rbm-bk{border:1px solid #e3d8be;background:#fffdf8;border-radius:14px;padding:14px;margin:4px 0 14px}
+.rbm-bk-ttl{font-family:var(--serif);font-weight:900;font-size:16px;color:#1c1814;margin-bottom:6px}
+.rbm-bk-txt{font-size:13px;color:#5a4e3d;line-height:1.6;margin-bottom:10px;word-break:keep-all}
+.rbm-bk-row{display:flex;gap:8px}
+.rbm-bk-row button{flex:1;padding:14px 6px!important;font-size:14px!important;letter-spacing:0!important}
+
+body:has(#rbm-ed.show) #rb-install,body:has(#panel.show) #rb-install{display:none!important}
+.rbm-hint{font-size:13px;color:#5a4e3d;line-height:1.6;background:#faf6ec;border:1px solid #eadfc4;border-radius:10px;padding:10px 12px;margin-bottom:12px;word-break:keep-all}
+.rbm-wide{width:100%;margin-bottom:10px;padding:13px!important;font-size:14px!important}
+#rbm-list{margin:4px 0 12px}
+.rbm-row{display:flex;align-items:center;gap:10px;padding:11px 12px;border:1px solid #e8dfcb;border-radius:12px;margin-bottom:7px;background:#fff}
+.rbm-row-ico{font-size:20px}
+.rbm-row-nm{flex:1;font-size:15px;font-weight:700;color:#1c1814;word-break:keep-all}
+.rbm-row-cnt{font-size:11px;color:#857761}
+.rbm-row button{padding:8px 12px;border-radius:9px;border:1px solid #d9caa4;background:#faf6ec;color:#8a6420;font-weight:700;font-size:13px}
+#rbm-ed{position:fixed;inset:0;z-index:20000;background:#faf8f3;display:none;flex-direction:column}
+#rbm-ed.show{display:flex}
+.rbm-ed-hd{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 12px;background:#fff;border-bottom:1px solid #e8dfcb}
+.rbm-ed-ttl{font-family:var(--serif);font-weight:900;font-size:17px;color:#1c1814}
+.rbm-x{border:1px solid #d9caa4;background:#fff;border-radius:10px;padding:9px 12px;font-size:14px;color:#3d352b}
+.rbm-save{border:none;background:linear-gradient(135deg,#1c1814,#3a3026);color:#f3e3b8;border-radius:10px;padding:10px 20px;font-size:15px;font-weight:700}
+.rbm-ed-body{flex:1;overflow-y:auto;padding:14px 14px 80px}
+.rbm-ed-body label{display:block;font-size:13px;font-weight:700;color:#6a5d48;margin:12px 0 5px}
+.rbm-ed-body input,.rbm-ed-body textarea{width:100%;padding:12px;border:1px solid #e0d5bb;border-radius:10px;font-size:16px;font-family:'Noto Sans KR',sans-serif;background:#fff;color:#1c1814;-webkit-user-select:text;user-select:text}
+.rbm-sub{font-family:var(--serif);font-weight:900;font-size:17px;color:#1c1814;margin:22px 0 8px;padding-top:14px;border-top:1px solid #e8dfcb}
+.rbm-sub span{display:block;font-family:'Noto Sans KR',sans-serif;font-size:12px;font-weight:500;color:#857761;margin-top:3px}
+.rbm-card{background:#fff;border:1px solid #e3dac6;border-radius:12px;padding:10px;margin-bottom:8px}
+.rbm-card-top{display:flex;gap:6px;margin-bottom:6px}
+.rbm-card-top input{flex:1}
+.rbm-card .rbm-2{display:flex;gap:6px}
+.rbm-card .rbm-2 input{flex:1;font-size:14px;padding:10px}
+.rbm-card textarea{font-size:15px}
+.rbm-tools{display:flex;gap:6px;justify-content:flex-end;margin-top:6px}
+.rbm-tools button{width:38px;height:34px;border-radius:8px;border:1px solid #e0d5bb;background:#faf8f3;font-size:14px}
+.rbm-tools .rbm-rm{color:#c5221f;border-color:#f0c4bf}
+.rbm-num{font-family:var(--serif);font-weight:900;color:#8a6420;font-size:15px;margin-bottom:4px}
+.rbm-add{width:100%;padding:12px;border:1.5px dashed #c9b88e;border-radius:12px;background:#fff;color:#8a6420;font-weight:700;font-size:15px}
+.rbm-del-recipe{width:100%;margin-top:28px;padding:13px;border:1px solid #f0c4bf;border-radius:12px;background:#fff4f2;color:#c5221f;font-weight:700;font-size:15px}
 </style>
 </head>
 <body>
@@ -834,6 +874,24 @@ body{background:#faf8f3}
   <div class="page" id="p-admin">
     <div class="wrap">
       <div class="slbl" style="margin-bottom:16px" data-i="admin-title">⚙️ 관리자 설정</div>
+      <div class="admin-section" id="rbm-sec">
+        <div class="admin-sec-title">📖 레시피 관리</div>
+        <div class="rbm-hint">레시피를 고치거나 새로 추가할 수 있어요. 저장하면 <b>이 기기</b>에 바로 적용돼요.<br>한국어로 쓰면 저장할 때 <b>구글 번역</b>으로 영어·중국어·네팔어가 자동으로 만들어져요.<br>모든 직원 휴대폰에 적용하려면 <b>배포용 파일 다운로드</b> 후 GitHub에 index.html로 올려주세요.</div>
+        <button class="admin-btn primary rbm-wide" onclick="rbmNew()">＋ 새 레시피 추가</button>
+        <div id="rbm-list"></div>
+        <div class="rbm-bk">
+          <div class="rbm-bk-ttl">📤 백업 · 📥 가져오기</div>
+          <div class="rbm-bk-txt">바꾼 레시피 전체를 파일로 보내고(카카오톡 등), 다른 휴대폰에서 그 파일을 가져오면 똑같이 바뀌어요.</div>
+          <div class="rbm-bk-row">
+            <button class="admin-btn primary" onclick="rbmExport()">📤 파일 보내기</button>
+            <button class="admin-btn primary" onclick="document.getElementById('rbm-file').click()">📥 가져오기</button>
+          </div>
+          <input type="file" id="rbm-file" accept=".json,application/json,text/plain,*/*" style="display:none" onchange="rbmImport(this)">
+        </div>
+        <button class="admin-btn primary rbm-wide" onclick="rbmDownload()">⬇ 배포용 파일 다운로드 (index.html)</button>
+        <button class="admin-btn secondary rbm-wide" onclick="rbmReset()">↺ 이 기기 변경 취소 (원래 레시피로)</button>
+        <div class="admin-msg" id="rbm-msg"></div>
+      </div>
       <div class="admin-section">
         <div class="admin-sec-title" data-i="admin-pw-title">🔐 비밀번호 변경</div>
         <input class="admin-inp" type="password" id="admin-cur-pw" data-i-placeholder="admin-cur-pw-ph" placeholder="현재 비밀번호">
@@ -1309,6 +1367,8 @@ function iN(item,lang){const n=item.n;if(!n)return'';if(typeof n==='string')retu
 /* 재료 헬퍼 */
 const ing=((m,s,n='',w=null)=>({m,s,n,w}));
 
+/*RB-RECIPES-START*/
+const RB_VER='base-20261116';
 const RECIPES=[
   {id:'r1',icon:'🥩',
    name:{ko:'고기 양념 소스',en:'Meat Marinade Sauce',zh:'肉类腌制酱',ne:'मासुको म्यारिनेड सस'},
@@ -1520,6 +1580,7 @@ const RECIPES=[
    ],
    steps:{ko:['모두 잘 섞는다'],en:['Mix all together well'],zh:['将所有食材混合均匀'],ne:['सबैलाई राम्ररी मिसाउनुहोस्']}},
 ];
+/*RB-RECIPES-END*/
 
 const PCATS=[
   {id:'seq',icon:'⚡',name:{ko:'조리 순서',en:'Cooking Sequence',zh:'烹饪顺序',ne:'खाना पकाउने क्रम'},eye:{ko:'조리 순서',en:'Cooking Sequence',zh:'烹饪顺序',ne:'खाना पकाउने क्रम'},items:mki([
@@ -2114,7 +2175,7 @@ document.querySelectorAll('.tab').forEach(el=>el.addEventListener('click',()=>go
 const PW_KEY      = 'cwy_pw';
 const STAFF_KEY   = 'cwy_staff';       // 직원 목록
 const LOG_KEY     = 'cwy_access_log';  // 접속 기록
-const DEFAULT_PW  = '1234';
+const DEFAULT_PW  = '최우영5324';
 const STAFF_ICONS = ['👨‍🍳','👩‍🍳','🧑‍🍳','👨‍💼','👩‍💼','🧑‍💼','👨‍🔧','👩‍🔧','🧑‍🔧','⭐'];
 
 let currentUser   = null;   // 현재 로그인 직원명 ('관리자' or 이름)
@@ -2974,7 +3035,7 @@ function doReset(){S={};save();init();}
    열람 가능: 10:00~15:00 / 17:00~21:00
    비밀번호: 관리자 전용
 ════════════════════════════════════════════════ */
-const RECIPE_PW = '@sfmint';
+const RECIPE_PW = '최우영5324';
 // 비번 해제 세션 유지 없음 — 매번 입력
 let rlServerHour = null;  // 서버에서 받아온 시간
 let rlClockTimer = null;
@@ -3051,7 +3112,7 @@ function toggleRlEye(){
 function doRlUnlock(){
   const val = document.getElementById('rl-inp').value;
   const errEl = document.getElementById('rl-err');
-  if(val === RECIPE_PW){
+  if(val === RECIPE_PW || val === getSavedPw()){
     errEl.textContent = '';
     closeRlOverlay();
     _gotoTab('recipe');
@@ -3063,6 +3124,184 @@ function doRlUnlock(){
   }
 }
 
+
+/* ════ 레시피 관리 (추가·수정) ════ */
+const RB_LS='rb_recipes_local';
+const RB_ORIG=JSON.parse(JSON.stringify(RECIPES));
+(function(){
+  try{const sv=JSON.parse(localStorage.getItem(RB_LS)||'null');
+    if(sv&&sv.base===RB_VER&&Array.isArray(sv.recipes))RECIPES.splice(0,RECIPES.length,...sv.recipes);}catch(e){}
+})();
+let _rbmIdx=-1,_rbmIngs=[],_rbmSteps=[];
+const rbmEsc=t=>String(t==null?'':t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+const rbmKo=o=>o==null?'':(typeof o==='object'?(o.ko||''):String(o));
+function rbmStepToEdit(t){
+  if(/^━━━/.test(t))return '## '+t.replace(/━/g,'').trim();
+  return t.replace(/<b class="hl">(.*?)<\/b>/g,'**$1**').replace(/<[^>]+>/g,'');
+}
+function rbmStepFromEdit(t){
+  t=t.trim(); if(!t)return '';
+  if(t.startsWith('##'))return '━━━ '+t.replace(/^#+/,'').trim()+' ━━━';
+  t=t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  return t.replace(/\*\*(.+?)\*\*/g,'<b class="hl">$1</b>');
+}
+function rbmPersist(){
+  try{localStorage.setItem(RB_LS,JSON.stringify({base:RB_VER,recipes:RECIPES}));}catch(e){alert('저장 공간이 부족합니다.');}
+  renderRecipe(); rbmRenderList();
+}
+function rbmMsg(t){const m=document.getElementById('rbm-msg');if(m){m.textContent=t;setTimeout(()=>m.textContent='',3000);}}
+function rbmRenderList(){
+  const el=document.getElementById('rbm-list'); if(!el)return;
+  el.innerHTML=RECIPES.map((r,i)=>`<div class="rbm-row"><span class="rbm-row-ico">${r.icon||'🍽️'}</span><div class="rbm-row-nm">${rbmEsc(rbmKo(r.name))}<div class="rbm-row-cnt">재료 ${r.ing.length}개</div></div><button onclick="rbmOpen(${i})">수정</button></div>`).join('');
+}
+function rbmOpen(i){
+  _rbmIdx=i; const r=i>=0?RECIPES[i]:{icon:'🍽️',name:{ko:''},eye:{ko:''},note:{ko:''},ing:[],steps:{ko:[]}};
+  document.getElementById('rbm-ed-ttl').textContent=i>=0?'레시피 수정':'새 레시피';
+  document.getElementById('rbm-icon').value=r.icon||'';
+  document.getElementById('rbm-name').value=rbmKo(r.name);
+  document.getElementById('rbm-eye').value=rbmKo(r.eye);
+  document.getElementById('rbm-note').value=rbmKo(r.note);
+  document.getElementById('rbm-del').style.display=i>=0?'block':'none';
+  _rbmIngs=r.ing.map(x=>({m:rbmKo(x.m),s:x.s||'',n:rbmKo(x.n),w:rbmKo(x.w)}));
+  if(!_rbmIngs.length)_rbmIngs=[{m:'',s:'',n:'',w:''}];
+  _rbmSteps=(r.steps.ko||[]).map(rbmStepToEdit); if(!_rbmSteps.length)_rbmSteps=[''];
+  rbmDraw(); document.getElementById('rbm-ed').classList.add('show'); document.body.style.overflow='hidden';
+}
+function rbmNew(){rbmOpen(-1);}
+function rbmClose(){document.getElementById('rbm-ed').classList.remove('show');document.body.style.overflow='';}
+function rbmCollect(){
+  document.querySelectorAll('#rbm-ings .rbm-card').forEach((c,i)=>{const q=k=>c.querySelector('[data-k="'+k+'"]').value;_rbmIngs[i]={m:q('m'),s:q('s'),n:q('n'),w:q('w')};});
+  document.querySelectorAll('#rbm-steps textarea').forEach((t,i)=>_rbmSteps[i]=t.value);
+}
+function rbmDraw(){
+  document.getElementById('rbm-ings').innerHTML=_rbmIngs.map((x,i)=>`<div class="rbm-card">
+    <div class="rbm-card-top"><input data-k="m" placeholder="재료 이름" value="${rbmEsc(x.m)}"><input data-k="s" placeholder="수량 예) 1,300그램" value="${rbmEsc(x.s)}"></div>
+    <div class="rbm-2"><input data-k="n" placeholder="구분 (예: 양념)" value="${rbmEsc(x.n)}"><input data-k="w" placeholder="주의 문구 (선택)" value="${rbmEsc(x.w)}"></div>
+    <div class="rbm-tools"><button onclick="rbmMove('i',${i},-1)">▲</button><button onclick="rbmMove('i',${i},1)">▼</button><button class="rbm-rm" onclick="rbmRm('i',${i})">✕</button></div></div>`).join('');
+  document.getElementById('rbm-steps').innerHTML=_rbmSteps.map((t,i)=>`<div class="rbm-card"><div class="rbm-num">${i+1}</div><textarea rows="3" placeholder="조리 방법">${rbmEsc(t)}</textarea>
+    <div class="rbm-tools"><button onclick="rbmMove('s',${i},-1)">▲</button><button onclick="rbmMove('s',${i},1)">▼</button><button class="rbm-rm" onclick="rbmRm('s',${i})">✕</button></div></div>`).join('');
+}
+function rbmAddIng(){rbmCollect();_rbmIngs.push({m:'',s:'',n:'',w:''});rbmDraw();}
+function rbmAddStep(){rbmCollect();_rbmSteps.push('');rbmDraw();}
+function rbmRm(t,i){rbmCollect();(t==='i'?_rbmIngs:_rbmSteps).splice(i,1);rbmDraw();}
+function rbmMove(t,i,d){rbmCollect();const a=t==='i'?_rbmIngs:_rbmSteps,j=i+d;if(j<0||j>=a.length)return;[a[i],a[j]]=[a[j],a[i]];rbmDraw();}
+/* 한국어를 고치면 그 항목의 다른 언어는 한국어로 표시 */
+function rbmLang(old,ko){ if(old&&typeof old==='object'&&old.ko===ko)return old; return {ko}; }
+
+/* ── 구글 번역 (저장할 때 새로 쓰거나 고친 한국어만 자동 번역) ── */
+const RB_TL={en:'en',zh:'zh-CN',ne:'ne'};
+async function rbmGT(texts,tl){
+  if(!texts.length)return [];
+  const call=async q=>{
+    const u='https://translate.googleapis.com/translate_a/single?client=gtx&sl=ko&tl='+tl+'&dt=t&q='+encodeURIComponent(q);
+    const r=await fetch(u); if(!r.ok)throw new Error('gt '+r.status);
+    const d=await r.json(); return (d[0]||[]).map(x=>x[0]).join('');
+  };
+  try{ // 한 번에 묶어서 번역
+    const out=(await call(texts.join('\n'))).split('\n').map(t=>t.trim());
+    if(out.length===texts.length)return out;
+  }catch(e){}
+  const res=[]; for(const t of texts){res.push(await call(t));} return res; // 하나씩
+}
+async function rbmTranslate(r){
+  const jobs=[]; // {get, set}
+  const addObj=(o)=>{ if(o&&typeof o==='object'&&o.ko&&!o.en) jobs.push({t:o.ko,set:(l,v)=>o[l]=v}); };
+  addObj(r.name); addObj(r.eye); addObj(r.note);
+  r.ing.forEach(x=>{addObj(x.m); addObj(x.n); addObj(x.w);});
+  if(r.steps&&!r.steps.en){
+    const ko=r.steps.ko||[];
+    ko.forEach((st,i)=>{
+      const div=/^━━━/.test(st); const plain=st.replace(/━/g,'').replace(/<[^>]+>/g,'').trim();
+      jobs.push({t:plain,set:(l,v)=>{(r.steps[l]=r.steps[l]||[])[i]=div?('━━━ '+v+' ━━━'):v;}});
+    });
+  }
+  const todo=jobs.filter(j=>j.t);
+  if(!todo.length)return true;
+  for(const l of Object.keys(RB_TL)){
+    const out=await rbmGT(todo.map(j=>j.t),RB_TL[l]);
+    todo.forEach((j,i)=>{ if(out[i]) j.set(l,out[i]); });
+  }
+  return true;
+}
+function rbmSave(){
+  rbmCollect();
+  const name=document.getElementById('rbm-name').value.trim();
+  if(!name){alert('레시피 이름을 입력하세요.');return;}
+  const old=_rbmIdx>=0?RECIPES[_rbmIdx]:null;
+  const oldIng=old?old.ing:[];
+  const ings=_rbmIngs.filter(x=>x.m.trim()).map(x=>{
+    const prev=oldIng.find(o=>rbmKo(o.m)===x.m.trim());
+    return {m:rbmLang(prev&&prev.m,x.m.trim()),s:x.s.trim(),n:x.n.trim()?rbmLang(prev&&prev.n,x.n.trim()):'',w:x.w.trim()?rbmLang(prev&&prev.w,x.w.trim()):null};
+  });
+  const stepsKo=_rbmSteps.map(rbmStepFromEdit).filter(Boolean);
+  let steps={ko:stepsKo};
+  if(old&&JSON.stringify(old.steps.ko)===JSON.stringify(stepsKo))steps=old.steps;
+  const note=document.getElementById('rbm-note').value.trim();
+  const r={id:old?old.id:'u'+Date.now(),icon:document.getElementById('rbm-icon').value.trim()||'🍽️',
+    name:rbmLang(old&&old.name,name),eye:rbmLang(old&&old.eye,document.getElementById('rbm-eye').value.trim()),
+    note:note?rbmLang(old&&old.note,note):{ko:''},ing:ings,steps};
+  if(old)RECIPES[_rbmIdx]=r; else RECIPES.push(r);
+  rbmPersist(); rbmClose(); rbmMsg('✓ 저장했어요 · 구글 번역 중...');
+  rbmTranslate(r).then(()=>{rbmPersist();rbmMsg('✓ 저장 + 번역 완료 (영어·중국어·네팔어)');})
+    .catch(()=>{rbmMsg('저장했어요 · 번역 실패(인터넷 확인) — 다른 언어는 한국어로 보여요');});
+}
+function rbmDelete(){
+  if(_rbmIdx<0)return;
+  if(!confirm('"'+rbmKo(RECIPES[_rbmIdx].name)+'" 레시피를 삭제할까요?'))return;
+  RECIPES.splice(_rbmIdx,1); rbmPersist(); rbmClose(); rbmMsg('삭제했어요');
+}
+function rbmReset(){
+  if(!confirm('이 기기에서 바꾼 레시피를 모두 취소하고 원래대로 되돌릴까요?'))return;
+  localStorage.removeItem(RB_LS); RECIPES.splice(0,RECIPES.length,...JSON.parse(JSON.stringify(RB_ORIG))); renderRecipe(); rbmRenderList(); rbmMsg('원래 레시피로 되돌렸어요');
+}
+
+/* ── 전체 백업 보내기 / 가져오기 ── */
+async function rbmExport(){
+  const d=new Date(),pad=n=>String(n).padStart(2,'0');
+  const stamp=d.getFullYear()+pad(d.getMonth()+1)+pad(d.getDate())+'_'+pad(d.getHours())+pad(d.getMinutes());
+  const data=JSON.stringify({app:'gogiya-recipe-book',type:'recipes-backup',saved:d.toISOString(),count:RECIPES.length,recipes:RECIPES});
+  const name='레시피백업_'+stamp+'.json';
+  const file=new File([data],name,{type:'application/json'});
+  try{
+    if(navigator.canShare&&navigator.canShare({files:[file]})){
+      await navigator.share({files:[file],title:'고기야 레시피북 백업',text:'레시피북 백업 파일 ('+RECIPES.length+'개 레시피) — 레시피북 관리자 > 가져오기에서 불러오세요'});
+      rbmMsg('✓ 백업 파일을 보냈어요'); return;
+    }
+  }catch(e){ if(e&&e.name==='AbortError')return; }
+  const u=URL.createObjectURL(file); const a=document.createElement('a'); a.href=u; a.download=name;
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(u),3000);
+  rbmMsg('✓ 백업 파일을 다운로드했어요');
+}
+function rbmImport(inp){
+  const f=inp.files&&inp.files[0]; inp.value=''; if(!f)return;
+  const rd=new FileReader();
+  rd.onload=()=>{
+    try{
+      const d=JSON.parse(rd.result);
+      const list=Array.isArray(d)?d:d.recipes;
+      if(!Array.isArray(list)||!list.length||!list.every(r=>r&&r.id&&r.name&&Array.isArray(r.ing)&&r.steps))throw new Error('bad');
+      const when=d.saved?new Date(d.saved).toLocaleString('ko-KR'):'';
+      if(!confirm('백업 파일의 레시피 '+list.length+'개로 이 기기의 레시피를 모두 바꿀까요?'+(when?'\n(백업 시각: '+when+')':'')))return;
+      RECIPES.splice(0,RECIPES.length,...list);
+      rbmPersist(); rbmMsg('✓ 가져오기 완료 — 레시피 '+list.length+'개');
+    }catch(e){ alert('레시피북 백업 파일이 아니에요. 파일을 다시 확인해주세요.'); }
+  };
+  rd.readAsText(f);
+}
+async function rbmDownload(){
+  try{
+    const res=await fetch('./index.html',{cache:'no-store'}); let src=await res.text();
+    const a=src.indexOf('/*RB-RECIPES-START*/'),b=src.indexOf('/*RB-RECIPES-END*/');
+    if(a<0||b<0)throw new Error('marker');
+    const ver='v'+new Date().toISOString().replace(/[-:T]/g,'').slice(0,12);
+    const block='/*RB-RECIPES-START*/\nconst RB_VER=\''+ver+'\';\nconst RECIPES='+JSON.stringify(RECIPES,null,1)+';\n';
+    src=src.slice(0,a)+block+src.slice(b);
+    const blob=new Blob([src],{type:'text/html'}); const u=URL.createObjectURL(blob);
+    const l=document.createElement('a'); l.href=u; l.download='index.html'; document.body.appendChild(l); l.click(); l.remove();
+    setTimeout(()=>URL.revokeObjectURL(u),3000);
+    rbmMsg('✓ index.html 다운로드 — GitHub에 덮어 올려주세요');
+  }catch(e){alert('파일을 만들 수 없어요. 인터넷 연결을 확인해주세요.');}
+}
 /* ════ INIT ════ */
 function init(){
   load();
@@ -3072,6 +3311,7 @@ function init(){
   updateHeader();
   applyLang();
   checkKakaoBtn();
+  rbmRenderList();
 }
 init();
 
@@ -3095,7 +3335,7 @@ document.getElementById('splash').style.display='none';
   enterApp(false);
 })();
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('./recipe-sw.js',{scope:'./recipe-book'}).catch(e=>console.log(e));
+  navigator.serviceWorker.register('./recipe-sw.js',{scope:'./'}).catch(e=>console.log(e));
 }
 /* ── 앱 설치 버튼 ── */
 (function(){
@@ -3121,5 +3361,21 @@ if ('serviceWorker' in navigator) {
 })();
 </script>
 
+<div id="rbm-ed">
+  <div class="rbm-ed-hd"><button class="rbm-x" onclick="rbmClose()">✕ 닫기</button><div class="rbm-ed-ttl" id="rbm-ed-ttl">레시피 수정</div><button class="rbm-save" onclick="rbmSave()">저장</button></div>
+  <div class="rbm-ed-body">
+    <label>아이콘 (이모지)</label><input id="rbm-icon" maxlength="4">
+    <label>레시피 이름</label><input id="rbm-name" placeholder="예) 양념 게장 (1박스)">
+    <label>윗줄 안내 (작은 글씨)</label><input id="rbm-eye" placeholder="예) 꽃게 이물질 확인">
+    <label>안내 메모 (노란 칸, 없으면 비우기)</label><textarea id="rbm-note" rows="2"></textarea>
+    <div class="rbm-sub">📦 재료 <span>이름 · 수량 · 구분(없으면 비우기) · 주의 문구</span></div>
+    <div id="rbm-ings"></div>
+    <button class="rbm-add" onclick="rbmAddIng()">＋ 재료 추가</button>
+    <div class="rbm-sub">📋 조리 방법 <span>**글자** = 노란 강조 · 맨 앞에 ## = 구분선 제목</span></div>
+    <div id="rbm-steps"></div>
+    <button class="rbm-add" onclick="rbmAddStep()">＋ 순서 추가</button>
+    <button class="rbm-del-recipe" id="rbm-del" onclick="rbmDelete()">🗑 이 레시피 삭제</button>
+  </div>
+</div>
 </body>
 </html>

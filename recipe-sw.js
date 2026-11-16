@@ -1,6 +1,6 @@
 /* 최우영고기야 레시피북 서비스워커 */
-const CACHE='recipe-book-v1';
-const ASSETS=['./recipe-book.html','./recipe-manifest.json','./recipe-icon-192.png','./recipe-icon-512.png','./recipe-apple-icon.png'];
+const CACHE='recipe-book-v5';
+const ASSETS=['./','./index.html','./recipe-manifest.json','./recipe-icon-192.png','./recipe-icon-512.png','./recipe-apple-icon.png'];
 self.addEventListener('install',e=>{
   e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)).then(()=>self.skipWaiting()));
 });
@@ -17,6 +17,6 @@ self.addEventListener('fetch',e=>{
     fetch(req).then(res=>{
       if(res.ok){const cp=res.clone();caches.open(CACHE).then(c=>c.put(req,cp));}
       return res;
-    }).catch(()=>caches.match(req).then(r=>r||caches.match('./recipe-book.html')))
+    }).catch(()=>caches.match(req).then(r=>r||caches.match('./index.html')))
   );
 });

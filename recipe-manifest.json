@@ -1,9 +1,9 @@
 {
-  "id": "./recipe-book",
+  "id": "./",
   "name": "최우영고기야 레시피북",
   "short_name": "레시피북",
-  "start_url": "./recipe-book.html",
-  "scope": "./recipe-book",
+  "start_url": "./",
+  "scope": "./",
   "display": "standalone",
   "display_override": [
     "standalone",

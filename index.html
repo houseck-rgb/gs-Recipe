@@ -2955,7 +2955,7 @@ function buildRecipeReport(r){
   const dateStr=`${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())} (${days[now.getDay()]})`;
   const mins=st?Math.max(0,Math.round((en-st)/60000)):0;
   const lines=[
-    '🔥 최우영 고기야 — 레시피 완료 보고',
+    '최우영 고기야 — 레시피 완료',
     '━━━━━━━━━━',
     `📋 ${ko(r.name)}`,
     `📅 ${dateStr}`,
@@ -2964,7 +2964,7 @@ function buildRecipeReport(r){
     bad?`⚠️ 순서 다르게 진행: ${bad}곳`:'✅ 레시피 순서대로 진행',
     '━━━━━━━━━━',
     '진행 순서 (체크한 시간순)',
-    ...done.map((x,k)=>`${k+1}. ${x.t?hm(x.t):'--:--'}  ${x.name} ${x.amt}${x.ok?'':'  ⚠️ 레시피 '+(x.i+1)+'번 순서'}`),
+    ...done.map((x,k)=>`${k+1}. ${x.t?hm(x.t):'--:--'}  ${x.name}${x.ok?'':'  ⚠️ 레시피 '+(x.i+1)+'번 순서'}`),
     '━━━━━━━━━━',
   ].filter(Boolean);
   return lines.join('\n');

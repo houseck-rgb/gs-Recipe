@@ -1,5 +1,5 @@
 /* 최우영고기야 레시피북 서비스워커 */
-const CACHE='recipe-book-v10';
+const CACHE='recipe-book-v12';
 const ASSETS=['./','./index.html','./recipe-manifest.json','./recipe-icon-192.png','./recipe-icon-512.png','./recipe-apple-icon.png'];
 self.addEventListener('install',e=>{
   e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)).then(()=>self.skipWaiting()));

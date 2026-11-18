@@ -627,7 +627,16 @@ body:has(#rbm-ed.show) #rb-install,body:has(#panel.show) #rb-install{display:non
 .rbm-num{font-family:var(--serif);font-weight:900;color:#8a6420;font-size:15px;margin-bottom:4px}
 .rbm-add{width:100%;padding:12px;border:1.5px dashed #c9b88e;border-radius:12px;background:#fff;color:#8a6420;font-weight:700;font-size:15px}
 .rbm-del-recipe{width:100%;margin-top:28px;padding:13px;border:1px solid #f0c4bf;border-radius:12px;background:#fff4f2;color:#c5221f;font-weight:700;font-size:15px}
+#panel-reset-wrap{display:none;padding:6px 16px 4px;background:#faf8f3}
+#panel-reset-wrap.show{display:block}
+.panel-reset-btn{width:100%;padding:15px;border:1.5px solid #c9b88e;border-radius:14px;background:#fff;color:#1c1814;font-family:'Noto Sans KR',sans-serif;font-size:17px;font-weight:800;letter-spacing:1px;box-shadow:0 1px 2px rgba(60,40,10,.04),0 6px 20px rgba(60,40,10,.06)}
+.panel-reset-btn:active{transform:scale(.98);background:#faf6ec}
 </style>
+<script>
+/* PC(윈도우·맥)에서는 공유 창 대신 복사 → 카카오톡 PC에 붙여넣기 */
+window.IS_PC=!/android|iphone|ipad|ipod|mobile/i.test(navigator.userAgent)&&!(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+if(window.IS_PC){try{Object.defineProperty(navigator,'share',{value:undefined,configurable:true});Object.defineProperty(navigator,'canShare',{value:undefined,configurable:true});}catch(e){}}
+</script>
 </head>
 <body>
 <button id="rb-install" type="button">📲 레시피북 앱 설치</button>
@@ -914,16 +923,6 @@ body:has(#rbm-ed.show) #rb-install,body:has(#panel.show) #rb-install{display:non
         <div class="admin-msg" id="admin-vis-msg"></div>
       </div>
       <div class="admin-section">
-        <div class="admin-sec-title" data-i="admin-staff-title">👨‍💼 직원 관리 (최대 10명)</div>
-        <div id="staffEditList" style="margin-bottom:12px"></div>
-        <div style="display:flex;gap:8px;margin-bottom:8px">
-          <input class="admin-inp" type="text" id="staffNameInp" data-i-placeholder="admin-staff-name-ph" placeholder="이름" style="margin-bottom:0;flex:1.2">
-          <input class="admin-inp" type="text" id="staffCodeInp" data-i-placeholder="admin-staff-code-ph" placeholder="입장코드" style="margin-bottom:0;flex:1">
-          <button class="admin-btn primary" style="flex-shrink:0;padding:12px 14px" data-i="admin-staff-add-btn" onclick="addStaffMember()">추가</button>
-        </div>
-        <div class="admin-msg" id="staff-msg"></div>
-      </div>
-      <div class="admin-section">
         <div class="admin-sec-title" data-i="admin-log-title">📋 접속 기록</div>
         <button class="admin-btn secondary" style="width:100%;margin-bottom:8px" data-i="admin-log-view-btn" onclick="openLogModal()">접속 기록 보기</button>
         <button class="admin-btn secondary" style="width:100%" data-i="admin-log-del-btn" onclick="clearLogs()">기록 전체 삭제</button>
@@ -955,8 +954,9 @@ body:has(#rbm-ed.show) #rb-install,body:has(#panel.show) #rb-install{display:non
     <div class="pb-complete" id="pbComplete"><span style="font-size:16px">✦</span><span class="pb-complete-txt" data-i="pb-ok">모든 항목 완료 — All Clear</span></div>
   </div>
   <div class="pbody" id="pbody"></div>
+  <div id="panel-reset-wrap"><button class="panel-reset-btn" onclick="resetCurRecipe()">↺ 처음부터 다시 하기</button></div>
   <div id="panel-kakao-wrap">
-    <button class="panel-kakao-btn" onclick="sharePanelKakao()">📲 <span data-i="kakao-btn">카카오톡으로 보고하기</span></button>
+    <button class="panel-kakao-btn" onclick="sharePanelKakao()">📋 완료 보고 복사하기 <span style="font-weight:500;font-size:.85em">(카톡에 붙여넣기)</span></button>
   </div>
   <div id="panel-dl-wrap">
     <button class="panel-dl-btn" onclick="downloadPanelReport()">📥 <span data-i="dl-btn-panel">완료 보고서 다운로드</span></button>
@@ -1866,6 +1866,7 @@ let S={},selPos=null,curPanel=null;
 const LS='gny_final';
 function load(){try{S=JSON.parse(localStorage.getItem(LS)||'{}')}catch{S={}}}
 function save(){localStorage.setItem(LS,JSON.stringify(S))}
+function markCkTime(key,on){if(on)S['T_'+key]=Date.now();else delete S['T_'+key];}
 const RK=(id,i)=>`R_${id}_${i}`;
 const PK=(pid,cid,i)=>`P_${pid}_${cid}_${i}`;
 const TK=(cid,i)=>`T_${cid}_${i}`;
@@ -1906,7 +1907,7 @@ function updateHeader(){
 /* ════ TOGGLE ════ */
 function toggleCk(e,key){
   e.stopPropagation();
-  S[key]=!S[key];save();
+  S[key]=!S[key];markCkTime(key,S[key]);save();
   const el=e.currentTarget,on=S[key];
   el.classList.toggle('done',on);
   el.querySelector('.ck-box').textContent=on?'✓':'';
@@ -1939,6 +1940,19 @@ function updatePanelProg(){
   if(pdl) pdl.classList.toggle('show',p===100);
   const pkl=document.getElementById('panel-kakao-wrap');
   if(pkl) pkl.classList.toggle('show',p===100);
+  const prs=document.getElementById('panel-reset-wrap');
+  if(prs) prs.classList.toggle('show',!!curPanel.rid&&d>0);
+}
+/* 레시피 체크 처음부터 다시 */
+function resetCurRecipe(){
+  if(!curPanel||!curPanel.rid)return;
+  const r=RECIPES.find(x=>x.id===curPanel.rid); if(!r)return;
+  if(!confirm('"'+(r.name[curLang]||r.name.ko)+'" 체크를 모두 지우고 처음부터 다시 할까요?'))return;
+  r.ing.forEach((_,i)=>{delete S[RK(r.id,i)];delete S['T_'+RK(r.id,i)];}); save();
+  document.getElementById('pbody').innerHTML=buildRecipeBody(r);
+  updateHeader();updatePanelProg();refreshCards();checkKakaoBtn();
+  document.getElementById('panel').scrollTop=0;
+  const pb=document.getElementById('pbody'); if(pb) pb.scrollTop=0;
 }
 function closePanel(){
   document.getElementById('panel').classList.remove('show');
@@ -2027,7 +2041,7 @@ function buildAnalBody(sec){return`<div class="ck-list">${sec.items.map((item,i)
 
 /* ════ CAT CARD ════ */
 function catCardClick(scope,id1,id2){
-  if(scope==='recipe'){const r=RECIPES.find(x=>x.id===id1);if(!r)return;openPanel(r.name[curLang]||r.name.ko,r.eye[curLang]||r.eye.ko,buildRecipeBody(r),()=>cntR(r),true);}
+  if(scope==='recipe'){const r=RECIPES.find(x=>x.id===id1);if(!r)return;openPanel(r.name[curLang]||r.name.ko,r.eye[curLang]||r.eye.ko,buildRecipeBody(r),()=>cntR(r),true);curPanel.rid=r.id;updatePanelProg();}
   else if(scope==='pos'){const cat=PCATS.find(c=>c.id===id2);if(!cat)return;const nm=cat.name[curLang]||cat.name.ko||cat.name;const ey=cat.eye[curLang]||cat.eye.ko||cat.eye;openPanel(nm,ey,buildPosCatBody(id1,cat),()=>cntCat(id1,cat));}
   else if(scope==='tech'){const cat=TCATS.find(c=>c.id===id1);if(!cat)return;const nm=cat.name[curLang]||cat.name.ko||cat.name;const ey=cat.eye[curLang]||cat.eye.ko||cat.eye;openPanel(nm,ey,buildTechBody(cat),()=>cntTC(cat));}
   else if(scope==='anal'){const sec=ASECS.find(s=>s.id===id1);if(!sec)return;const nm=sec.name[curLang]||sec.name.ko||sec.name;const ey=sec.eye[curLang]||sec.eye.ko||sec.eye;openPanel(nm,ey,buildAnalBody(sec),()=>cntAS(sec));}
@@ -2183,7 +2197,6 @@ let loginTime     = null;   // 로그인 시각
 
 /* 직원 목록 — 관리자 수정 없이 앱 소스에서만 관리 */
 const FIXED_STAFF = [
-  '5324',
   's16',
   '최우영s',
   '고선애s',
@@ -2596,6 +2609,7 @@ function confirmIng(){
   const key=_ingCtx.key;
   // 토글: 완료 ↔ 해제
   S[key]=!S[key];
+  markCkTime(key,S[key]);
   save();
   // 리스트 아이템 UI 즉시 반영
   const ckEl=document.querySelector('[data-ck="'+key+'"]');
@@ -2897,7 +2911,7 @@ function showTextPopup(text){
           btn.style.color='#6ae890';
           setTimeout(()=>{
             document.getElementById('text-popup-overlay')?.remove();
-            showShareResult('📋 복사 완료! 카카오톡에 붙여넣기 하세요.');
+            showShareResult(window.IS_PC?'📋 복사 완료! 카카오톡 PC 대화창을 열고 Ctrl+V 로 붙여넣으세요.':'📋 복사 완료! 카카오톡에 붙여넣기 하세요.');
           },700);
         })()" style="flex:1;padding:14px;background:linear-gradient(135deg,#6a5005,#c8960a);border:none;border-radius:12px;color:#080604;font-size:14px;font-weight:700;font-family:'Noto Sans KR',sans-serif;cursor:pointer">
           📋 복사하기
@@ -2927,8 +2941,45 @@ function showShareResult(msg){
 
 
 /* ════ 패널 카카오톡 보고 ════ */
+function buildRecipeReport(r){
+  const pad=n=>String(n).padStart(2,'0'),days=['일','월','화','수','목','금','토'];
+  const hm=t=>{const d=new Date(t);return pad(d.getHours())+':'+pad(d.getMinutes());};
+  const ko=o=>o&&typeof o==='object'?(o.ko||''):(o||'');
+  const done=r.ing.map((x,i)=>({i,name:ko(x.m),amt:x.s||'',t:S['T_'+RK(r.id,i)]||0})).filter(x=>S[RK(r.id,x.i)]);
+  done.sort((a,b)=>(a.t||0)-(b.t||0)||a.i-b.i);
+  let maxI=-1,bad=0;
+  done.forEach(x=>{x.ok=x.i>maxI; if(!x.ok)bad++; maxI=Math.max(maxI,x.i);});
+  const times=done.map(x=>x.t).filter(Boolean);
+  const st=times.length?Math.min(...times):0, en=times.length?Math.max(...times):0;
+  const now=new Date(en||Date.now());
+  const dateStr=`${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())} (${days[now.getDay()]})`;
+  const mins=st?Math.max(0,Math.round((en-st)/60000)):0;
+  const lines=[
+    '🔥 최우영 고기야 — 레시피 완료 보고',
+    '━━━━━━━━━━',
+    `📋 ${ko(r.name)}`,
+    `📅 ${dateStr}`,
+    st?`⏱ 시작 ${hm(st)} → 완료 ${hm(en)} (${mins}분)`:'',
+    `✅ 완료 ${done.length}/${r.ing.length}`,
+    bad?`⚠️ 순서 다르게 진행: ${bad}곳`:'✅ 레시피 순서대로 진행',
+    '━━━━━━━━━━',
+    '진행 순서 (체크한 시간순)',
+    ...done.map((x,k)=>`${k+1}. ${x.t?hm(x.t):'--:--'}  ${x.name} ${x.amt}${x.ok?'':'  ⚠️ 레시피 '+(x.i+1)+'번 순서'}`),
+    '━━━━━━━━━━',
+  ].filter(Boolean);
+  return lines.join('\n');
+}
+async function copyReportText(text){
+  let ok=false;
+  try{await navigator.clipboard.writeText(text);ok=true;}catch(e){
+    try{const ta=document.createElement('textarea');ta.value=text;ta.setAttribute('readonly','');ta.style.cssText='position:fixed;left:-9999px;top:0;opacity:0';document.body.appendChild(ta);ta.select();ta.setSelectionRange(0,text.length);ok=document.execCommand('copy');ta.remove();}catch(e2){}
+  }
+  if(ok)showShareResult('📋 복사 완료! 카카오톡 대화창에 붙여넣기 하세요.'+(window.IS_PC?' (Ctrl+V)':''));
+  else showTextPopup(text);
+}
 function sharePanelKakao(){
   if(!curPanel) return;
+  if(curPanel.rid){const r=RECIPES.find(x=>x.id===curPanel.rid);if(r){copyReportText(buildRecipeReport(r));return;}}
   const now   = new Date();
   const pad   = n => String(n).padStart(2,'0');
   const days  = ['일','월','화','수','목','금','토'];
@@ -2987,7 +3038,7 @@ async function doShareFallback(text){
     } catch(e2){}
   }
   if(copied){
-    showShareResult('📋 복사 완료! 카카오톡에 붙여넣기 하세요.');
+    showShareResult(window.IS_PC?'📋 복사 완료! 카카오톡 PC 대화창을 열고 Ctrl+V 로 붙여넣으세요.':'📋 복사 완료! 카카오톡에 붙여넣기 하세요.');
   } else {
     showTextPopup(text);
   }
@@ -3270,7 +3321,7 @@ async function rbmExport(){
   }catch(e){ if(e&&e.name==='AbortError')return; }
   const u=URL.createObjectURL(file); const a=document.createElement('a'); a.href=u; a.download=name;
   document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(u),3000);
-  rbmMsg('✓ 백업 파일을 다운로드했어요');
+  rbmMsg(window.IS_PC?'✓ 다운로드 폴더에 저장했어요 — 카카오톡 PC 대화창에 파일을 끌어다 놓으세요':'✓ 백업 파일을 다운로드했어요');
 }
 function rbmImport(inp){
   const f=inp.files&&inp.files[0]; inp.value=''; if(!f)return;
